@@ -16,7 +16,7 @@ class Solution {
         
         for (int i = 0; i < len; i++) {
             int cur = romans.get(s.charAt(i));
-            if (i < len - 1 && cur < romans.get(s.charAt(i + 1))) {
+            if (i < len - 1 && cur < romans.get(s.charAt(i + 1)))             {
                 num -= cur;
             } else {
                 num += cur;
