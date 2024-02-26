@@ -1,81 +1,77 @@
 class Solution {
+    
+    Map<Integer, List<Integer>> prime2index = new HashMap<>();
+    Map<Integer, List<Integer>> index2prime = new HashMap<>();
+    
+    //DFS method to traverse the graph
+    void dfs(int index, boolean[] visitedIndex, Map<Integer, Boolean> visitedPrime) {
+        
+        //if index is already visited, return
+        if(visitedIndex[index]) return;
+        
+        //if not, mark the index as visited and continue to logic
+        visitedIndex[index] = true;
+        
+        //loop through all prime factors of this number
+        for (int prime : index2prime.getOrDefault(index, new ArrayList<>())) {
+            
+            
+            //if prime factor is visited, then continue
+            if(visitedPrime.getOrDefault(prime, false)) {
+                continue;
+            }
+            
+            //mark prime as visited as visiting now and proceed with logic
+            visitedPrime.put(prime, true);
+            
+            //Loop through all indices that have this prime factor in common, adjacent index
+            for(int adjacentIndex : prime2index.getOrDefault(prime, new ArrayList<>())) {
+                
+                
+                //if adjacent index is already visited, continue to next
+                if(visitedIndex[adjacentIndex]) continue;
+                
+                //else call DFS for the adjacent index
+                dfs(adjacentIndex, visitedIndex, visitedPrime);
+                
+            }
+        }
+    }
+    
     public boolean canTraverseAllPairs(int[] nums) {
-        int MAX = 100000;
-        int N = nums.length;
-        boolean[] has = new boolean[MAX + 1];
-        for (int x: nums) {
-            has[x] = true;
-        }
-
-        // edge cases
-        if (N == 1) {
-            return true;
-        }
-        if (has[1]) {
-            return false;
-        }
-
-        // the general solution
-        int[] sieve = new int[MAX + 1];
-        for (int d = 2; d <= MAX; d++) {
-            if (sieve[d] == 0) {
-                for (int v = d; v <= MAX; v += d) {
-                    sieve[v] = d;
-                }
+        
+        
+        //find all the prime factors for each element in the nums array
+        // create two mappings prime2index and index2prime
+        for (int i=0; i < nums.length; i++) {
+            int temp = nums[i];
+            for(int j=2; j*j <= nums[i]; j++) {
+                if(temp % j == 0) {
+                    prime2index.computeIfAbsent(j, k -> new ArrayList<>()).add(i);
+                    index2prime.computeIfAbsent(i, k -> new ArrayList<>()).add(j);
+                    while (temp % j == 0) {
+                        temp = temp/j;
+                    }
+                }    
+            }
+            if( temp > 1 ) {
+                prime2index.computeIfAbsent(temp, k -> new ArrayList<>()).add(i);
+                index2prime.computeIfAbsent(i, k -> new ArrayList<>()).add(temp);
             }
         }
-
-        DSU union = new DSU(2 * MAX + 1);
-        for (int x: nums) {
-            int val = x;
-            while (val > 1) {
-                int prime = sieve[val];
-                int root = prime+MAX;
-                if (union.find(root) != union.find(x)) {
-                    union.merge(root, x);
-                }
-                while (val % prime == 0) {
-                    val /= prime;
-                }
+        
+        // run DFS (Depth First Search) from 0th index
+        boolean[] visitedIndex = new boolean[nums.length];
+        Map<Integer, Boolean> visitedPrime = new HashMap<>();
+        dfs(0, visitedIndex, visitedPrime);
+        
+        //check if all the indices are visited
+        for (boolean index : visitedIndex) {
+            if(!index) {
+                return false;
             }
         }
-
-        int cnt = 0;
-        for (int i=2; i <= MAX; i++) {
-            if (has[i] && union.find(i) == i) {
-                cnt++;
-            }
-        }
-        return cnt == 1;
-    }
-}
-class DSU {
-    public int[] dsu;
-    public int[] size;
-
-    public DSU(int N) {
-        dsu = new int[N + 1];
-        size = new int[N + 1];
-        for (int i = 0; i <= N; i++) {
-            dsu[i] = i;
-            size[i] = 1;
-        }
-    }
-    public int find(int x) {
-        return dsu[x] == x ? x : (dsu[x] = find(dsu[x]));
-    }
-    public void merge(int x, int y) {
-        int fx = find(x);
-        int fy = find(y);
-        if (fx == fy){
-            return;
-        }
-        if (size[fx] > size[fy]) {
-            int temp = fx;
-            fx = fy;
-            fy = temp;
-        }
-        dsu[fx] = fy;
-        size[fy] += size[fx];
+        
+        return true;
     }
 }
