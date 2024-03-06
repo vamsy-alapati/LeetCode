@@ -23,7 +23,7 @@ public class Solution {
 
         //travesing the list, slow by one node and fast by two nodes at a time
         // if cycle exists then they are bound to meet and be equal
-        while(fast.next != null && fast.next.next != null && slow.next != null) {
+        while(fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
 
