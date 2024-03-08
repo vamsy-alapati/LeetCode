@@ -14,6 +14,7 @@ class Solution {
         //initialize total frequency to max freq
         int totalFreq = frequencies[maxFreqIndex];
         
+        //loop through the frequencies index, and if the freq is same as maxFreq then add 
         while(maxFreqIndex > 0 && frequencies[maxFreqIndex] == frequencies[maxFreqIndex-1]) {
             totalFreq += frequencies[maxFreqIndex-1];
             maxFreqIndex--;
