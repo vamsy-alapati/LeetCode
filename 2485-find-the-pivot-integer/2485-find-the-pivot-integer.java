@@ -12,16 +12,20 @@ class Solution {
         int leftSum = leftVal;
         int rightSum = rightVal;
         
+        //start the loop 
         while(leftVal < rightVal) {
+            //if leftSum < rightSum -> increment the leftVal and add it to leftSum
             if(leftSum < rightSum) {
                 leftVal++;
                 leftSum += leftVal;
             }
+            //if leftSum > rightSum -> decrement the rightVal and add it to rightSum
             else {
                 rightVal--;
                 rightSum += rightVal;
             }
             
+            //check if leftSum = rightSum and pointers are next to each other
             if(leftSum == rightSum && leftVal + 1 == rightVal - 1) {
                 return leftVal+1;
             }
