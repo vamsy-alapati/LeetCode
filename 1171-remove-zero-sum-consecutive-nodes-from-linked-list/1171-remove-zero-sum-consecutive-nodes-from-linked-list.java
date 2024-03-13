@@ -12,24 +12,44 @@ class Solution {
     public ListNode removeZeroSumSublists(ListNode head) {
         
         ListNode front = new ListNode(0, head);
-        ListNode start = front;
+        ListNode current = front;
         
-        while (start != null) {
-            int prefixSum = 0;
-            ListNode end = start.next;
+        int prefixSum = 0;
+        
+        Map<Integer, ListNode> prefixSumToNode = new HashMap<>();
+        
+        while (current != null) {
+            //add current val to prefix sum
+            prefixSum += current.val;
             
-            while(end != null) {
-                prefixSum += end.val;
+            //if the prefixSum already exists in the HashMap then we have a zero sum nodes
+            if(prefixSumToNode.containsKey(prefixSum)) {
+                ListNode prev = prefixSumToNode.get(prefixSum);
+                //set current to previously prefix sum node, so you can start deleting nodes
+                current = prev.next;
                 
-                if(prefixSum == 0) {
-                    start.next = end.next;
+                //delete the zero sum nodes from hashmap
+                //to prevent incorrect deletions from linked list
+                
+                int p = prefixSum + current.val;
+                while(p != prefixSum) {
+                    prefixSumToNode.remove(p);
+                    current = current.next;
+                    p += current.val;
                 }
-                end = end.next;
+                
+                //make connection from prev node to the current node after deletions
+                prev.next = current.next;
+            }
+            //if the prefixSum doesn't exist then add the elements to HashMap
+            else {
+                prefixSumToNode.put(prefixSum, current);
             }
             
-            start = start.next;
+            current = current.next;
         }
         
         return front.next;
+        
     }
 }
