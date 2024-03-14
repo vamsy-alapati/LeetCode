@@ -1,32 +1,30 @@
 class Solution {
-    public int numSubarraysWithSum(int[] nums, int goal) {
+    public int slidingWindowAtMost(int[] nums, int goal) {
         
-        //track the subarray count
-        int totalCount = 0;
+        //initialize start and currSum and totalCount to 0;
+        int start = 0, currSum = 0,  totalCount = 0;
         
-        //track current sum up until a specific index
-        int currSum = 0;
-        
-        Map<Integer, Integer> freq = new HashMap<>();
-        
-        for (int n : nums) {
+        //iterate through array using sliding window
+        for (int end = 0; end < nums.length; end++) {
+            currSum += nums[end];
             
-            currSum += n;
-            // if current sum is goal, then increment subset count
-            if(currSum == goal) {
-                totalCount++;
+            //check if currSum <= goal, if yes increment totalCount
+            //else reduce the currSum by moving start pointer forward
+            
+            while (start <= end && currSum > goal) {
+                currSum -= nums[start++];
             }
             
-            //check if any prefix sum that can be subtracted to get another subset
-            if(freq.containsKey(currSum - goal)) {
-                totalCount += freq.get(currSum - goal);
-            }
-            
-            freq.put(currSum, freq.getOrDefault(currSum, 0) + 1);
+            //update total count by adding length of current subarray
+            totalCount += end - start + 1;
             
         }
         
         return totalCount;
         
+    }
+    
+    public int numSubarraysWithSum(int[] nums, int goal) {
+        return slidingWindowAtMost(nums, goal) - slidingWindowAtMost(nums, goal - 1);
     }
 }
