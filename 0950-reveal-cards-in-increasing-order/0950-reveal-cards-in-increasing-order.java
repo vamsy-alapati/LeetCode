@@ -1,32 +1,27 @@
 class Solution {
     public int[] deckRevealedIncreasing(int[] deck) {
         
-        //initialize variables
         int N = deck.length;
-        int [] result = new int[N];
-        boolean skip = false;
-        int indexInDeck = 0;
-        int indexInResult = 0;
         
-        //sort the deck
+        Queue<Integer> queue = new LinkedList<>();
+        
+        //load all indices to queue
+        for (int i = 0; i < N; i++) {
+            queue.add(i);
+        }
+        
+        //sort the array
         Arrays.sort(deck);
         
-        while (indexInDeck < N) {
-            //current index in result is available to fill
-            if(result[indexInResult] == 0) {
-                
-                //if skip is false, add card to result at this index
-                if(!skip) {
-                    result[indexInResult] = deck[indexInDeck];
-                    indexInDeck++;
-                }
-                
-                //toggle skip
-                skip = !skip;
-            }
+        //declare result
+        int [] result = new int[N];
+        for(int i = 0; i < N; i++) {
             
-            //move to next index in result
-            indexInResult = (indexInResult + 1) % N;
+            //reveal call by poll and place in result
+            result[queue.poll()] = deck[i];
+            
+            //move the next card to bottom
+            queue.add(queue.poll());
             
         }
         
