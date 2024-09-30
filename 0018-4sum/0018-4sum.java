@@ -1,54 +1,74 @@
+import java.util.*;
+
 class Solution {
+    
+    private List<List<Integer>> result;
+    
     public List<List<Integer>> fourSum(int[] nums, int target) {
         
-        Arrays.sort(nums);
-        
-        List<List<Integer>> res = new ArrayList<>();
-        
-        for (int a = 0; a < nums.length - 3; a++) {
-            // skip the duplicate starting values
-            if(a > 0 && nums[a] == nums[a-1]){
-                continue;
+        return new AbstractList<List<Integer>>() {
+            
+            public List<Integer> get(int index) {
+                init();
+                return result.get(index);
             }
             
-            for(int b = a+1; b < nums.length - 2; b++) {
-                //skip duplicate starting values
-                if(b > a+1 && nums[b] == nums[b-1]){
-                    continue;
+            public int size() {
+                init();
+                return result.size();
+            }
+            
+            private void init() {
+                
+                if(result != null) return;
+                
+                List<List<Integer>> res = new ArrayList<>();
+                Set<List<Integer>> resSet = new HashSet<>();
+                
+                int n = nums.length;
+                
+                //sort the array
+                Arrays.sort(nums);
+                
+                for(int i = 0; i < n -3; i++) {
+                    
+                    for(int j = i+1; j < n-2; j++) {
+                        
+                        long newTarget = (long) target - (long) nums[i] - (long) nums[j];
+                        int left = j+1;
+                        int right = n-1;
+                        
+                        while(left < right) {
+                            long total = (long) nums[left] + (long) nums[right];
+                            if(total == newTarget) {
+                                resSet.add(Arrays.asList(nums[i], nums[j], nums[left], nums[right]));
+                                left++;
+                                right--;
+                                //avoid duplicate starting points
+                                while(left < right && nums[left] == nums[left-1]){
+                                    left++;
+                                }
+                                while(left < right && nums[right] == nums[right+1]) {
+                                    right--;
+                                }
+                            }
+                            else if(total < newTarget) {
+                                left++;
+                            }
+                            else {
+                                right--;
+                            }
+                        }
+                        
+                    }
+                    
                 }
                 
-                int c = b + 1;
-                int d = nums.length-1;
-                
-                while(c < d) {
-                    long total =(long) nums[a]+nums[b]+nums[c]+nums[d];
-                    if(total == target) {
-                        System.out.println("match found");
-                        res.add(Arrays.asList(nums[a],nums[b],nums[c],nums[d]));
-                        c++;
-                        d--;
-                        
-                        //skip duplicates
-                        while (c < d && nums[c] == nums[c-1]){
-                            c++;
-                        }
-                        while(c < d && nums[d] == nums[d+1]){
-                            d--;
-                        }
-                        
-                    }
-                    else if(total < target) {
-                        c++;
-                    }
-                    else {
-                        d--;
-                    }
-                }
+                res.addAll(resSet);
+                result = res;
                 
             }
-        }
-        
-        return res;
-        
+            
+        };
     }
 }
