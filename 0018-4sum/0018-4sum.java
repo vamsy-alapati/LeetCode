@@ -22,12 +22,6 @@ class Solution {
                 
                 while(c < d) {
                     long total =(long) nums[a]+nums[b]+nums[c]+nums[d];
-                    // System.out.println("a: "+a+" :: nums[a]: "+nums[a]);
-                    // System.out.println("b: "+b+" :: nums[b]: "+nums[b]);
-                    // System.out.println("c: "+c+" :: nums[c]: "+nums[c]);
-                    // System.out.println("d: "+d+" :: nums[d]: "+nums[d]);
-                    // System.out.println("Total: "+total);
-                    // System.out.println("Target: "+target);
                     if(total == target) {
                         System.out.println("match found");
                         res.add(Arrays.asList(nums[a],nums[b],nums[c],nums[d]));
